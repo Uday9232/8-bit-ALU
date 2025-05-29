@@ -1,0 +1,29 @@
+// Testbench for alu8
+module tb_alu8;
+  reg  [7:0] A, B;
+  reg  [2:0] Op;
+  wire [7:0] Y;
+
+  // Instantiate the ALU
+  alu8 uut (
+    .A(A),
+    .B(B),
+    .Op(Op),
+    .Y(Y)
+  );
+
+  initial begin
+    // Display header
+    $display("Time | Op | A   | B   | Y");
+    $display("-------------------------------");
+
+    // Test combinations
+    A = 8'd15; B = 8'd3;
+    for (integer i = 0; i < 8; i = i + 1) begin
+      Op = i;
+      #5; // wait for output
+      $display("%4t | %b | %3d | %3d | %3d", $time, Op, A, B, Y);
+    end
+    $finish;
+  end
+endmodule

@@ -1,0 +1,33 @@
+module alu8 (
+    input  wire [7:0] A,       // operand A
+    input  wire [7:0] B,       // operand B
+    input  wire [2:0] Op,      // operation select (3 bits → 8 ops)
+    output reg  [7:0] Y        // result output
+);
+
+  // Precompute all operation results
+  wire [7:0] add_r  = A + B;
+  wire [7:0] sub_r  = A - B;
+  wire [7:0] mul_r  = A * B;
+  wire [7:0] div_r  = B ? (A / B) : 8'b0;  // avoid division by zero → output 0
+  wire [7:0] or_r   = A | B;
+  wire [7:0] nand_r = ~(A & B);
+  wire [7:0] nor_r  = ~(A | B);
+  wire [7:0] and_r  = A & B;
+
+  // 8:1 multiplexer selects the final output based on Op
+  always @(*) begin
+    case (Op)
+      3'b000: Y = add_r;   // Add
+      3'b001: Y = sub_r;   // Subtract
+      3'b010: Y = mul_r;   // Multiply
+      3'b011: Y = div_r;   // Divide
+      3'b100: Y = or_r;    // OR
+      3'b101: Y = nand_r;  // NAND
+      3'b110: Y = nor_r;   // NOR
+      3'b111: Y = and_r;   // AND
+      default: Y = 8'b0;
+    endcase
+  end
+
+endmodule
